@@ -18,12 +18,12 @@ namespace ArmDot {
                     int startingIndex = 0;
                     for(int i=0;i<instrs.Count;i++) {
                         var instr = instrs[i];
-                        startingIndex = i;
                         if(instr.OpCode == OpCodes.Ldc_I4) {
                             if(instrs[i+1].OpCode == OpCodes.Newarr) {
                                 bool isChar = instrs[i+1].Operand.ToString().Contains("Char");
                                 if(isChar) {
                                     var times = instr.GetLdcI4Value();
+                                    startingIndex = i;
                                     char[] chars = new char[times];
                                     i += 5;
                                     for(var j=0;j<times;j++) {
