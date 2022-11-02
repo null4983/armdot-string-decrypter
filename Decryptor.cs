@@ -28,9 +28,7 @@ namespace ArmDot {
                                     i += 5;
                                     for(var j=0;j<times;j++) {
                                         chars[j] = (char)(instrs[i+1].GetLdcI4Value() ^ instrs[i+2].GetLdcI4Value());
-                                        if(j == times) {                                            
-                                            break;
-                                        } else { i += 6; }
+                                        i += 6;
                                     }
                                     var obj = instrs.First(x => x.OpCode == OpCodes.Newobj && x.Operand.ToString().Contains("String"));
                                     var lol = instrs.IndexOf(obj);
