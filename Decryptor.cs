@@ -16,52 +16,40 @@ namespace ArmDot {
                     var body = method.Body;
                     var instrs = body.Instructions;
                     int startingIndex = 0;
-                    int endingIndex = 0;
                     for(int i=0;i<instrs.Count;i++) {
                         var instr = instrs[i];
                         startingIndex = i;
                         if(instr.OpCode == OpCodes.Ldc_I4) {
                             if(instrs[i+1].OpCode == OpCodes.Newarr) {
-                                bool isChar = instrs[i + 1].Operand.ToString().Contains("Char");
+                                bool isChar = instrs[i+1].Operand.ToString().Contains("Char");
                                 if(isChar) {
                                     var times = instr.GetLdcI4Value();
-                                    int first = 0;
                                     char[] chars = new char[times];
                                     i += 5;
-                                    for(var j = 0; j < times; j++) {
-                                        chars[j] = (char)(instrs[i + 1].GetLdcI4Value() ^ instrs[i + 2].GetLdcI4Value());
-                                        if(j == times) {
-                                            endingIndex = instrs.IndexOf(instrs[i + 5]);
-                                            
+                                    for(var j=0;j<times;j++) {
+                                        chars[j] = (char)(instrs[i+1].GetLdcI4Value() ^ instrs[i+2].GetLdcI4Value());
+                                        if(j == times) {                                            
                                             break;
                                         } else { i += 6; }
                                     }
                                     var obj = instrs.First(x => x.OpCode == OpCodes.Newobj && x.Operand.ToString().Contains("String"));
                                     var lol = instrs.IndexOf(obj);
-                                    if(instrs[lol-1].OpCode == OpCodes.Stelem_I2 && instrs[lol - 2].OpCode == OpCodes.Xor) {
+                                    if(instrs[lol-1].OpCode == OpCodes.Stelem_I2 && instrs[lol-2].OpCode == OpCodes.Xor) {
                                         obj.OpCode = OpCodes.Ldstr;
                                         obj.Operand = new string(chars);
+                                        count++;
                                     }
                                     while(startingIndex < lol) {
                                         instrs[startingIndex].OpCode = OpCodes.Nop;
                                         startingIndex++;
                                     }
-
                                 }
                             }
                         }
                     }
-                    
-                    
-
                 }
-                
             }
-
-
             return count;
         }
-
-        
     }
 }
